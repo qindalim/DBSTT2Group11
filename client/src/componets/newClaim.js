@@ -79,7 +79,7 @@ function NewClaim() {
             label="Follow up claim"
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={3}>
           <TextField
             required
             id="previousClaim"
@@ -90,6 +90,7 @@ function NewClaim() {
           />
         </Grid>
       </Grid>
+      <button>Submit</button>
     </React.Fragment>
   );
 }

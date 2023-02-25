@@ -21,6 +21,9 @@ function App() {
           <li className="nav-item">
             <a href='http://localhost:3000/newclaim'>Add claim</a>
           </li>
+          <li className="nav-item">
+          <a href='http://localhost:3000'>Log Out</a>
+          </li>
       </nav>
       <NavRouter/>
 		</div>
