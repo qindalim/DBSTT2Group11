@@ -133,8 +133,8 @@ export default function Home() {
   };
 
   const columns = [
-    { field: 'ClaimID', headerName: 'Claim ID', type: 'number', editable: false },
-    { field: 'InsuranceID', headerName: 'Insurance ID', type: 'number', editable: false },
+    { field: 'ClaimID', headerName: 'Claim ID',  editable: false },
+    { field: 'InsuranceID', headerName: 'Insurance ID', editable: false },
     { field: 'FirstName', headerName: 'First Name', width:150, editable: false },
     { field: 'LastName', headerName: 'Last Name', width:150, editable: false },
     {

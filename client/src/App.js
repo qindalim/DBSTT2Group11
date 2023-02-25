@@ -7,6 +7,7 @@ import Home from "./componets/home"
 import NavRouter from "./navRouter"
 
 
+
 function App() {
   return (
     <div className="App">
