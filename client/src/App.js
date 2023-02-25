@@ -1,25 +1,33 @@
-import logo from './logo.svg';
+import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
+import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import NewClaim from './componets/newClaim'
+import Login from './componets/login'
+import Home from "./componets/home"
+import NavRouter from "./navRouter"
+
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      <nav className="navbar navbar-expand navbar-dark bg-dark App-links">
+          <li className="nav-item">
+            <a href='http://localhost:3000/'>Login</a>
+          </li>
+          <li className="nav-item">
+            <a href='http://localhost:3000/home'>Home</a>
+          </li>
+          <li className="nav-item">
+            <a href='http://localhost:3000/newclaim'>Add Claim</a>
+          </li>
+          <li className="nav-item">
+          <a href='http://localhost:3000'>Log Out</a>
+          </li>
+      </nav>
+      <NavRouter/>
+		</div>
+	);
 }
 
 export default App;
