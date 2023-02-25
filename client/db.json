@@ -1,0 +1,18 @@
+{ 
+  "home" : 
+    [{
+      "ClaimID": 2010,
+      "InsuranceID": 1009,
+      "FirstName": "Martin",
+      "LastName": "Ong",
+      "ExpenseDate": "2022-07-14T08:00:00+08:00",
+      "Amount": 100.00,
+      "Purpose": "Dentist",
+      "FollowUp": 0,
+      "PreviousClaimID": null,
+      "Status": "Approved",
+      "LastEditedClaimDate": "2022-07-15T12:22:45+08:00"
+     }]
+   ,
+  "test" : {"test" :"Test"}
+}

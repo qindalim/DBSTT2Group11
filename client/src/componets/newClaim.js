@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useNavigate } from 'react-router';
+import axios from 'axios'
 
 
 function NewClaim() {
@@ -13,6 +14,7 @@ function NewClaim() {
   const submit = () => {
     navigate("/home")
   }
+}
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -99,6 +101,6 @@ function NewClaim() {
       <button onClick={submit}>Submit</button>
     </React.Fragment>
   );
-}
+
 
 export default NewClaim;

@@ -11,6 +11,7 @@ import {
   GridToolbarContainer,
   GridActionsCellItem,
 } from '@mui/x-data-grid-pro';
+import { getClaims } from '../api/claims';
 
 const initialRows = [
   {
@@ -280,6 +281,7 @@ const initialRows = [
     "LastEditedClaimDate": "2023-03-11T00:00:00+08:00"
    }
 ];
+
 
 function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
