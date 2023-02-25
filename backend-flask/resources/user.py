@@ -1,14 +1,3 @@
-from flask.views import MethodView
-from flask_smorest import Blueprint, abort
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-    get_jwt,
-    jwt_required,
-)
-from passlib.hash import pbkdf2_sha256
-
 from db import db
 from models import UserModel
 from schemas import UserSchema
@@ -18,9 +7,7 @@ from blocklist import BLOCKLIST
 blp = Blueprint("Users", "users", description="Operations on users")
 
 
-@blp.route("/register")
 class UserRegister(MethodView):
-    @blp.arguments(UserSchema)
     def post(self, user_data):
         if UserModel.query.filter(UserModel.username == user_data["username"]).first():
             abort(409, message="A user with that username already exists.")
