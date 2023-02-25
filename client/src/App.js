@@ -2,7 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import NewClaim from './componets/newClaim'
 import Login from './componets/login'
-import Home from "./componets/home";
+import Home from "./componets/home"
 
 
 function App() {
@@ -16,8 +16,9 @@ function App() {
             <Route path='/home' element={<Home/>} />
           </Routes>
         </Router>
-
-        </header>
+      </header>
 		</div>
 	);
 }
+
+export default App;
