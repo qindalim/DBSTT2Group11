@@ -13,13 +13,18 @@ class ClaimsModel(db.Model):
     ExpenseDate = db.Column(db.String(255), nullable=False)
     Amount = db.Column(db.Float(precision=2), nullable=False)
     Purpose = db.Column(db.String(255), nullable=False)
-    Purpose = db.Column(db.String(255), nullable=False)
     FollowUp = db.Column(db.Boolean, nullable=False)
-    Purpose = db.Column(db.String(255), nullable=False)
     PreviousClaimID = db.Column(db.Integer, nullable=False)
     Status = db.Column(db.String(20), nullable=False)
     LastEditedClaimDate = db.Column(db.String(255), nullable=False)
 
-    
     policies = db.relationship("PolicyModel", back_populates="claims")
+
+    def __repr__(self):
+        return f"Policy(ClaimID = {ClaimID}, InsuranceID = {InsuranceID},\
+                FirstName = {FirstName}, LastName = {LastName},\
+                ExpenseDate = {ExpenseDate}, Amount = {Amount},\
+                Purpose = {Purpose}, FollowUp = {FollowUp},\
+                PreviousClaimID = {PreviousClaimID}, Status = {Status},\
+                LastEditedClaimDate = {LastEditedClaimDate})"
 

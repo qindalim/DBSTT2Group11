@@ -15,3 +15,8 @@ class UserModel(db.Model):
         cascade="all, delete",
         passive_deletes=True,
     )    
+
+    def __repr__(self):
+        return f"Policy(EmployeeID = {EmployeeID}, Password = {Password},\
+                FirstName = {FirstName}, LastName = {LastName},\
+                Age = {Age})"

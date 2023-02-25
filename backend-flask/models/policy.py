@@ -23,4 +23,10 @@ class PolicyModel(db.Model):
         passive_deletes=True,
     )    
 
+    def __repr__(self):
+        return f"Policy(InsuranceID = {InsuranceID}, EmployeeID = {EmployeeID},\
+                InsuranceType = {InsuranceType}, PolicyStartDate = {PolicyStartDate},\
+                PolicyTerm = {PolicyTerm}, PolicyEndDate = {PolicyEndDate},\
+                ClaimLimit = {ClaimLimit}, RemainingClaimLimit = {RemainingClaimLimit})"
+
     
