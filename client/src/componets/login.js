@@ -1,162 +1,111 @@
-import React, { Component } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
+import { useContext, useEffect, useRef, useState } from 'react';
+import AuthContext from './context/AuthProvider';
 
-import AuthService from "../services/auth.service";
+const LOGIN_URL = "/login";
 
-import { withRouter } from '../common/with-router';
+const Login = () => {
+  const { setAuth } = useContext(AuthContext);
+  const userRef = useRef();
+  const errRef = useRef();
 
-const required = value => {
-    if (!value) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          This field is required!
-        </div>
-      );
-    }
-};
+  const [user, setUser] = useState('');
+  const [pwd, setPwd] = useState('');
+  const [errMsg, setErrMsg] = useState('');
+  const [success, setSuccess] = useState(false);
 
-class Login extends Component {
-    constructor(props) {
-      super(props);
-      this.handleLogin = this.handleLogin.bind(this);
-      this.onChangeUsername = this.onChangeUsername.bind(this);
-      this.onChangePassword = this.onChangePassword.bind(this);
-      this.storeUserSession = this.storeUserSession.bind(this);
-  
-      this.state = {
-        username: "",
-        password: "",
-        loading: false,
-        message: ""
-      };
-    }
+  // set focus on username field
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
 
-    storeUserSession(data){
+  // if user retype username or pwd, clear error msg
+  useEffect(() => {
+    setErrMsg('');
+  }, [user, pwd]);
 
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    onChangeUsername(e) {
-        this.setState({
-          username: e.target.value
-        });
-    }
+    // SIMULATE SUCCESSFUL FAKE LOGIN
+    setSuccess(true);
 
-    onChangePassword(e) {
-        this.setState({
-          password: e.target.value
-        });
-    }
+    // TRY REAL LOGIN 
+    // try {
+    //     const response = await axios.post(LOGIN_URL,
+    //         JSON.stringify({ user: user, pwd: pwd }),
+    //         {
+    //             headers: { 'Content-Type': 'application/json' },
+    //             withCredentials: true
+    //         }
+    //     );
+    //     console.log(JSON.stringify(response?.data));
+    //     const accessToken = response?.data?.accessToken;
+    //     const roles = response?.data?.roles;
+    //     setAuth({ user, pwd, roles, accessToken });
+    //     setUser('');
+    //     setPwd('');
+    //     setSuccess(true);   // LOGIN SUCCESSFUL
+    // } catch (err) {
+    //     if (!err?.response) {
+    //         setErrMsg('No Server Response');
+    //     } else if (err.response?.status === 400) {
+    //         setErrMsg('Missing Username or Password');
+    //     } else if (err.response?.status === 401) {
+    //         setErrMsg('Unauthorized');
+    //     } else {
+    //         setErrMsg('Login Failed');
+    //     }
+    //     errRef.current.focus();
+    // }
 
-    handleLogin(e) {
-        e.preventDefault();
-    
-        this.setState({
-          message: "",
-          loading: true
-        });
-    
-        this.form.validateAll();
+    // If login fails, ask backend if they got enable CORS?
+  };
 
-        if (this.checkBtn.context._errors.length === 0) {
-            AuthService.login(this.state.username, this.state.password).then(
-              () => {
-                this.props.router.navigate("/profile");
-                window.location.reload();
-              },
-              error => {
-                const resMessage =
-                  (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                  error.message ||
-                  error.toString();
-      
-                this.setState({
-                  loading: false,
-                  message: resMessage
-                });
-              }
-            );
-          } else {
-            this.setState({
-              loading: false
-            });
-        }
-    }
+  return (
+    <>
+      {success ? (
+        <section>
+          <h1>LOGIN SUCCESSFUL</h1>
+          <h2>Insurance Home</h2>
+          <p>Refresh to restart</p>
+        </section>
+      ) : (
+        <section>
+          {/* ERROR MSG */}
+          <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"}>{errMsg}</p>
+          <h1>Sign In</h1>
+          <form onSubmit={handleSubmit}>
 
-    render() {
-        return (
-            <div className="col-md-12">
-                <div className="card card-container">
-                    <img
-                        src=""
-                        alt="profile-img"
-                        className="profile-img-card"
-                    />
+            {/* USERNAME FIELD */}
+            <label htmlFor="employee">Employee id: </label>
+            <input
+              type="text"
+              id="employee"
+              ref={userRef}
+              autoComplete="off"
+              onChange={(e) => setUser(e.target.value)}
+              value={user}
+              required
+            />
 
-                    <Form
-                        onSubmit={this.handleLogin}
-                        ref={c => {
-                            this.form = c;
-                        }}
-                    >
-                        <div className="form-group">
-                            <label htmlFor="username">Username</label>
-                            <Input 
-                                type="text"
-                                className="form-control"
-                                name="username"
-                                value={this.state.username}
-                                onChange={this.onChangeUsername}
-                                validations={[required]}
-                            />
-                        </div>
 
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <Input 
-                                type="text"
-                                className="form-control"
-                                name="password"
-                                value={this.state.password}
-                                onChange={this.onChangePassword}
-                                validations={[required]}
-                            />
-                        </div>
+            {/* PASSWORD FIELD */}
+            <label htmlFor="password">Password: </label>
+            <input
+              type="password"
+              id="password"
+              onChange={(e) => setPwd(e.target.value)}
+              value={pwd}
+              required
+            />
 
-                        <div className="form-group">
-                            <button
-                                className="btn btn-primary btn-block"
-                                disabled={this.state.loading}
-                            >
-                                {this.state.loading && (
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                )}
-                                <span>Login</span>
-                            </button>
-                        </div>
-
-                        {this.state.message && (
-                            <div className="form-group">
-                                <div className="alert alert-danger" role="alert">
-                                    {this.state.message}
-                                </div>
-                            </div>
-                        )}
-
-                        <CheckButton
-                        style={{ display: "none" }}
-                            ref={c => {
-                                this.checkBtn = c;
-                        }}
-                        />
-                    </Form>
-                </div>
-            </div>
-        )
-    }
+            {/* SIGN IN BUTTON */}
+            <button>Sign In</button>
+          </form>
+        </section>
+      )}
+    </>
+  )
 }
 
-export default withRouter(Login);
+export default Login
