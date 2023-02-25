@@ -1,7 +1,10 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import AuthContext from '../services/AuthProvider.js'
+import { useNavigate } from 'react-router';
 
 const LOGIN_URL = "/login";
+
+
 
 const Login = () => {
   const { setAuth } = useContext(AuthContext);
@@ -12,7 +15,7 @@ const Login = () => {
   const [pwd, setPwd] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
-
+  const navigate = useNavigate();
   // set focus on username field
   useEffect(() => {
     userRef.current.focus();
@@ -26,8 +29,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+
     // SIMULATE SUCCESSFUL FAKE LOGIN
     setSuccess(true);
+    navigate("/home")
 
     // TRY REAL LOGIN 
     // try {
