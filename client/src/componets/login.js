@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import AuthContext from './context/AuthProvider';
+import AuthContext from '../services/AuthProvider.js'
 
 const LOGIN_URL = "/login";
 
