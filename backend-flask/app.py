@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_restful import Api
-from sqlalchemy import and_
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -12,9 +11,6 @@ app.config["PROPAGATE_EXCEPTIONS"] = True
 CORS(app)
 
 db = SQLAlchemy(app)
-# db.init_app(app)
-# api = Api(app)
-
 
 
 class UserModel(db.Model):
@@ -36,19 +32,6 @@ class UserModel(db.Model):
 
     def json(self):
         return {"EmployeeID": self.EmployeeID, "Password": self.Password, "FirstName": self.FirstName, "LastName": self.LastName, "Age": self.Age}
-
-    # policies = db.relationship(
-    #     "PolicyModel",
-    #     back_populates="User",
-    #     cascade="all, delete",
-    #     passive_deletes=True,
-    # )    
-
-    # def __repr__(self):
-    #     return f"Policy(EmployeeID = {EmployeeID}, Password = {Password},\
-    #             FirstName = {FirstName}, LastName = {LastName},\
-    #             Age = {Age})"
-
 
 
 class PolicyModel(db.Model):
@@ -78,21 +61,6 @@ class PolicyModel(db.Model):
     def json(self):
         return {"InsuranceID": self.InsuranceID, "EmployeeID": self.EmployeeID, "InsuranceType": self.InsuranceType, "PolicyStartDate": self.PolicyStartDate, "PolicyTerm": self.PolicyTerm, "PolicyEndDate": self.PolicyEndDate, "ClaimLimit": self.ClaimLimit, "RemainingClaimLimit": self.RemainingClaimLimit}
 
-    # users = db.relationship("UserModel", back_populates="policies")
-    # claims = db.relationship(
-    #     "ClaimsModel",
-    #     back_populates="InsurancePolicies",
-    #     cascade="all, delete",
-    #     passive_deletes=True,
-    # )    
-
-    # def __repr__(self):
-    #     return f"Policy(InsuranceID = {InsuranceID}, EmployeeID = {EmployeeID},\
-    #             InsuranceType = {InsuranceType}, PolicyStartDate = {PolicyStartDate},\
-    #             PolicyTerm = {PolicyTerm}, PolicyEndDate = {PolicyEndDate},\
-    #             ClaimLimit = {ClaimLimit}, RemainingClaimLimit = {RemainingClaimLimit})"
-
-    
 
 class ClaimsModel(db.Model):
     __tablename__ = "InsuranceClaims"
@@ -100,7 +68,6 @@ class ClaimsModel(db.Model):
     ClaimID = db.Column(db.Integer, primary_key=True, nullable=False)
     InsuranceID = db.Column(db.Integer,  
                             db.ForeignKey("InsurancePolicies.InsuranceID", ondelete="CASCADE"), 
-                            primary_key=True, 
                             nullable=False)
     FirstName = db.Column(db.String(50), nullable=False)
     LastName = db.Column(db.String(50), nullable=False)
@@ -128,16 +95,6 @@ class ClaimsModel(db.Model):
     def json(self):
         return {"ClaimID": self.ClaimID, "InsuranceID": self.InsuranceID, "FirstName": self.FirstName, "LastName": self.LastName, "ExpenseDate": self.ExpenseDate, "Amount": self.Amount, "Purpose": self.Purpose, "FollowUp": self.FollowUp, "PreviousClaimID": self.PreviousClaimID, "Status": self.Status, "LastEditedClaimDate": self.LastEditedClaimDate}
 
-    # policies = db.relationship("PolicyModel", back_populates="claims")
-
-    # def __repr__(self):
-    #     return f"Policy(ClaimID = {self.ClaimID}, InsuranceID = {self.InsuranceID},\
-    #             FirstName = {FirstName}, LastName = {LastName},\
-    #             ExpenseDate = {ExpenseDate}, Amount = {Amount},\
-    #             Purpose = {Purpose}, FollowUp = {FollowUp},\
-    #             PreviousClaimID = {PreviousClaimID}, Status = {Status},\
-    #             LastEditedClaimDate = {LastEditedClaimDate})"
-
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -160,9 +117,14 @@ def login():
     ), 404
 
 
-@app.route("/getData/<int:employeeID>")
+@app.route("/getData/<int:employeeID>", methods=["GET"])
 def getAllClaims(employeeID):
-    claims = ClaimsModel.query.filter(ClaimsModel.EmployeeID==employeeID).all()
+    policies = PolicyModel.query.filter(PolicyModel.EmployeeID==employeeID).all()
+    policies = [policy.json() for policy in policies]
+    claims = {}
+    for policy in policies:
+        claims = ClaimsModel.query.filter(ClaimsModel.InsuranceID==policy["InsuranceID"]).all()
+        
     if len(claims) > 0:
         return jsonify(
             {
@@ -182,26 +144,108 @@ def getAllClaims(employeeID):
     ), 404
 
 
-@app.route("/editRecord/<int:employeeID>")
-def editRecord(employeeID):
-    claims = UserModel.query.filter(UserModel.EmployeeID==employeeID).all()
-    if len(claims) > 0:
+@app.route("/editRecord", methods=["PUT"])
+def editRecord():
+    data = request.get_json()
+    claimID = data["ClaimID"]
+
+    claim = ClaimsModel.query.filter(ClaimsModel.ClaimID==claimID).first()
+    # policies = PolicyModel.query.filter(and_(PolicyModel.EmployeeID==employeeID, PolicyModel.InsuranceID==insuranceID)).all()
+    # claims = ClaimsModel.query.filter(and_(ClaimsModel.InsuranceID==policies.InsuranaceID, ClaimsModel.ClaimID==claimID)).all()
+
+    if claim:
+        claim.FirstName = data["FirstName"]
+        claim.LastName = data["LastName"]
+        claim.ExpenseDate = data["ExpenseDate"]
+        claim.Amount = data["Amount"]
+        claim.Purpose = data["Purpose"]
+        claim.FollowUp = data["FollowUp"]
+        claim.PreviousClaimID = data["PreviousClaimID"]
+        claim.Status = data["Status"]
+        claim.LastEditedClaimDate = datetime.now().strftime('%Y-%m-%dT%H:%M:%S+08:00')
+
+        try:
+            db.session.commit()
+            return jsonify(
+                    {
+                        "code": 200,
+                        "message": "Patient chat data updated.",
+                        "data": claim.json()
+                    }
+                ), 200
+        except:
+            return jsonify(
+                {
+                    "code": 500,
+                    "message": "Server error try again later"
+                }
+            ), 500
+        
+@app.route("/addRecord", methods=["POST"])
+def addRecord():
+    data = request.get_json()
+    claim = ClaimsModel(**data)
+    try:
+        db.session.add(claim)
+        db.session.commit()
+
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred adding of claim.",
+                "data": {
+                    "ClaimID": data["ClaimID"]
+                }
+            }
+        ), 500
+    return jsonify(
+        {
+            "code": 201,
+            "message": "Claim created.",
+            "data": claim.json()
+        }
+    ), 201
+
+@app.route("/deleteRecord", methods=["DELETE"])
+def deleteRecord():
+    data = request.get_json()
+    employeeID = data["EmployeeID"]
+    claimID = data["ClaimID"]
+    
+    policy_result = PolicyModel.query.filter_by(EmployeeID=employeeID).all()
+
+    insurance_id_lst = []
+    for i in policy_result:
+        insurance_id_lst.append(i.InsuranceID)
+    
+    claim_result = []
+    claim_id_lst = []
+    for insurance_id in insurance_id_lst:
+        temp = ClaimsModel.query.filter_by(InsuranceID=insurance_id).all()
+        for i in temp:
+            claim_id_lst.append(i.ClaimID)
+            claim_result.append(i)
+
+    if claimID in claim_id_lst:
+        claim = ClaimsModel.query.get(claimID)
+        db.session.delete(claim)
+        db.session.commit()
         return jsonify(
             {
                 "code": 200,
-                "data": {
-                    "claims": [claim.json() for claim in claims]
-                },
-                "message": "Claims found."
+                "message": f"Claim {claimID} deleted."
             }
         ), 200
+
     return jsonify(
         {
             "code": 404,
-            "message": "There are no Staffs in the list.",
+            "message": "Claim does not belong to employee.",
 
         }
     ), 404
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=True)
