@@ -11,7 +11,7 @@ import NavRouter from "./navRouter"
 function App() {
   return (
     <div className="App">
-      <nav className="navbar navbar-expand navbar-dark bg-dark">
+      <nav className="navbar navbar-expand navbar-dark bg-dark App-links">
           <li className="nav-item">
             <a href='http://localhost:3000/'>Login</a>
           </li>
@@ -23,7 +23,6 @@ function App() {
           </li>
       </nav>
       <NavRouter/>
-
 		</div>
 	);
 }
