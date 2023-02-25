@@ -19,7 +19,7 @@ function App() {
             <a href='http://localhost:3000/home'>Home</a>
           </li>
           <li className="nav-item">
-            <a href='http://localhost:3000/newclaim'>Add claim</a>
+            <a href='http://localhost:3000/newclaim'>Add Claim</a>
           </li>
           <li className="nav-item">
           <a href='http://localhost:3000'>Log Out</a>
