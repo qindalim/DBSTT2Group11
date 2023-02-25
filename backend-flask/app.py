@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:password0403@localhost:3306/insurancedata"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:root@localhost:3306/insurancedata"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["PROPAGATE_EXCEPTIONS"] = True
 CORS(app)
@@ -248,5 +248,5 @@ def deleteRecord():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 

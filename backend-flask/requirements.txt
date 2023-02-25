@@ -4,4 +4,4 @@ flask-smorest
 flask_cors
 flask_restful
 python-dotenv
-mysql-python
+mysqlclient

@@ -14,7 +14,7 @@ function NewClaim() {
   const submit = () => {
     navigate("/home")
   }
-}
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -101,6 +101,7 @@ function NewClaim() {
       <button onClick={submit}>Submit</button>
     </React.Fragment>
   );
+}
 
 
 export default NewClaim;
